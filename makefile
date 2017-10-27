@@ -1,7 +1,11 @@
+FLAGS=-ggdb -c -o
+
 all: main
 
-main: main.o bmp_func.o
-	gcc -ggdb -o main main.o bmp_func.o
+main: main.o mem.o
+	gcc -ggdb -o main main.o mem.o
 
+mem.o: mem.c
+	gcc $(FLAGS) mem.o mem.c
 clean:
-	rm -f main
+	rm -f main *.o

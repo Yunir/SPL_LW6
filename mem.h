@@ -7,8 +7,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <sys/mman.h>
+#include <stdbool.h>
 
 #define  HEAP_START  ((void*)0x04040000)
+#define BLOCK_MIN_SIZE 4096
 
 struct mem;
 
