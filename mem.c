@@ -60,8 +60,36 @@ void* _malloc(size_t query) {
     return (int8_t*) block + sizeof(struct mem);
 }
 
-void _free(void* mem) {
+struct mem* find_previous_block (struct mem* block, void* wanted) {
+    while (block->next) {
+        struct mem* next = block->next+1;
+        if(next == (struct mem*)wanted)
+            return block;
+        block = block->next;
+    }
+    return NULL;
+}
 
+void _free(void* mem) {
+    struct mem* previous_block = find_previous_block(HEAP_START, mem);
+    struct mem* block = HEAP_START;
+    if (previous_block)
+        block = block->next;
+        if (block) {
+            block->is_free = 1;
+            if (block->next) {
+                if (block->next->is_free == 1) {
+                    block->capacity += block->next->capacity + sizeof(struct mem);
+                    block->next = block->next->next;
+                }
+            }
+            if(previous_block) {
+                if(previous_block->is_free == 1) {
+                    previous_block->capacity += block->capacity + sizeof(struct mem);
+                    previous_block->next = block->next;
+                }
+            }
+        }
 }
 
 void* heap_init(size_t initial_size) {
