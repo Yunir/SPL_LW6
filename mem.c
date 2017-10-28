@@ -114,4 +114,5 @@ void memalloc_debug_struct_info(FILE* f, struct mem const* const address) {
 void memalloc_debug_heap( FILE* f, struct mem const* ptr ) {
     for(; ptr; ptr = ptr->next)
         memalloc_debug_struct_info( f, ptr );
+    printf("================\n");
 }
