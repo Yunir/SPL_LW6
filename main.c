@@ -10,7 +10,6 @@ int main() {
     void* block_4 = _malloc(4079);
     void* block_5 = _malloc(4080);
     void* block_6 = _malloc(5000);
-    //void* block_7 = _malloc(4096);
 	memalloc_debug_heap(stdout, HEAP_START);
     _free(block_1);
     _free(block_3);

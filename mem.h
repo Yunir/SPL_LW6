@@ -26,7 +26,7 @@ struct mem {
 
 void* _malloc(size_t query);
 void _free(void* mem);
-void* heap_init(size_t initial_size);
+void heap_init(size_t initial_size);
 void memalloc_debug_struct_info(FILE* f, struct mem const* const address);
 void memalloc_debug_heap(FILE* f, struct mem const* ptr);
 

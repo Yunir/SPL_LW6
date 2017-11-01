@@ -1,5 +1,6 @@
 #include "mem.h"
 
+/* map new area from OS to save new information */
 struct mem* set_new_block(struct mem* last, size_t query) {
     size_t temp = query/BLOCK_MIN_SIZE;
     char* addr = (char*) (last) + last->capacity + sizeof(struct mem);
@@ -10,6 +11,7 @@ struct mem* set_new_block(struct mem* last, size_t query) {
         block = mmap(NULL, query, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (block == MAP_FAILED)
         return NULL;
+        
     struct mem* next = NULL;
     if ((temp+1) * 4096 >= size + sizeof(struct mem)) {
         next = (struct mem*) (addr + size);
@@ -23,12 +25,14 @@ struct mem* set_new_block(struct mem* last, size_t query) {
     return block;
 }
 
+/* return last block of memory */
 struct mem* get_last_block(struct mem* block) {
     while (block->next)
         block = block->next;
     return block;
 }
 
+/* return first faced free block of memory with enough capacity else null */
 struct mem* find_block(struct mem* block, size_t query) {
     while (block) {
         if (block->is_free && block->capacity >= query)
@@ -38,6 +42,10 @@ struct mem* find_block(struct mem* block, size_t query) {
     return NULL;
 }
 
+/*
+   split found free block to one busy and one free, then linking one to another
+   if can't find - get last element and map new area from OS and
+*/
 void* _malloc(size_t query) {
     struct mem* block = find_block(HEAP_START, query);
     struct mem* new = NULL;
@@ -47,8 +55,6 @@ void* _malloc(size_t query) {
         new->is_free = 1;
 
         block->next = new;
-        new = block;
-
         block->capacity = query;
         block->is_free = 0;
     } else {
@@ -92,15 +98,12 @@ void _free(void* mem) {
         }
 }
 
-void* heap_init(size_t initial_size) {
+void heap_init(size_t initial_size) {
     void* mapped_heap = mmap(HEAP_START, initial_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
-
     struct mem* head = HEAP_START;
     head->next = NULL;
 	head->capacity = initial_size*BLOCK_MIN_SIZE - sizeof(struct mem);
 	head->is_free = 1;
-
-    return mapped_heap;
 }
 
 void memalloc_debug_struct_info(FILE* f, struct mem const* const address) {
