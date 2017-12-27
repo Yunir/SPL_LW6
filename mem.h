@@ -11,6 +11,7 @@
 
 #define  HEAP_START  ((void*)0x04040000)
 #define BLOCK_MIN_SIZE 4096
+#define PAGE_SIZE 4096
 
 struct mem;
 

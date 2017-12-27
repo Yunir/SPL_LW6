@@ -2,10 +2,19 @@ FLAGS=-ggdb -c -o
 
 all: main
 
-main: main.o mem.o
-	gcc -ggdb -o main main.o mem.o
+main: output/main.o output/mem.o
+	gcc -ggdb -o main output/main.o output/mem.o
 
-mem.o: mem.c
-	gcc $(FLAGS) mem.o mem.c
+
+output/main.o: main.c
+	gcc $(FLAGS) output/main.o main.c
+
+output/mem.o: mem.c
+	gcc $(FLAGS) output/mem.o mem.c
+
 clean:
 	rm -f main *.o
+
+shared:
+	gcc -fPIC -c mem.c
+	gcc -shared -o mf.so -fPIC mem.o

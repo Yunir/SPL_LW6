@@ -11,7 +11,7 @@ struct mem* set_new_block(struct mem* last, size_t query) {
         block = mmap(NULL, query, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
     if (block == MAP_FAILED)
         return NULL;
-        
+
     struct mem* next = NULL;
     if ((temp+1) * 4096 >= size + sizeof(struct mem)) {
         next = (struct mem*) (addr + size);
@@ -46,7 +46,7 @@ struct mem* find_block(struct mem* block, size_t query) {
    split found free block to one busy and one free, then linking one to another
    if can't find - get last element and map new area from OS and
 */
-void* _malloc(size_t query) {
+void *_malloc(size_t query) {
     struct mem* block = find_block(HEAP_START, query);
     struct mem* new = NULL;
     if (block) {
